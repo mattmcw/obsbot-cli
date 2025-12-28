@@ -13,9 +13,13 @@ python main.py --host 127.0.0.1 --port 16284
 ```bash
 python main.py --list
 
-Command		Address
-WakeSleep	/OBSBOT/WebCam/General/WakeSleep
-ResetGimbal	/OBSBOT/WebCam/General/ResetGimbal
+Command		Address					Options	Cameras
+WakeSleep	/OBSBOT/WebCam/General/WakeSleep	[0/1]	*
+ResetGimbal	/OBSBOT/WebCam/General/ResetGimbal	[0]	*
+SetMirror	/OBSBOT/WebCam/General/SetMirror	[0/1]	*
+SetAutoFocus	/OBSBOT/WebCam/General/SetAutoFocus	[0/1]	*
+SetManualFocus	/OBSBOT/WebCam/General/SetManualFocus	[0->100]	*
+SetAutoExposure	/OBSBOT/WebCam/General/SetAutoExposure	[0/1]	*
 ```
 
 ## Coverage
@@ -25,8 +29,8 @@ ResetGimbal	/OBSBOT/WebCam/General/ResetGimbal
 /OBSBOT/WebCam/General/ConnectedResp
 /OBSBOT/WebCam/General/Disconnected
 /OBSBOT/WebCam/General/SelectDevice
-* /OBSBOT/WebCam/General/WakeSleep
-# /OBSBOT/WebCam/General/ResetGimbal
+* /OBSBOT/WebCam/General/WakeSleep [0,1]
+* /OBSBOT/WebCam/General/ResetGimbal [0]
 /OBSBOT/WebCam/General/SetZoom
 /OBSBOT/WebCam/General/SetZoomSpeed
 /OBSBOT/WebCam/General/SetZoomMax
@@ -38,14 +42,15 @@ ResetGimbal	/OBSBOT/WebCam/General/ResetGimbal
 /OBSBOT/WebCam/General/SetView
 /OBSBOT/WebCam/General/SetGimMotorDegree
 /OBSBOT/WebCam/General/SetGimMotorDegreeEx
-/OBSBOT/WebCam/General/SetMirror
+* /OBSBOT/WebCam/General/SetMirror [0, 1]
 /OBSBOT/WebCam/General/SetPCRecording
 /OBSBOT/WebCam/General/PCSnapshot
 
-/OBSBOT/WebCam/General/SetAutoFocus
-/OBSBOT/WebCam/General/SetAutoExposure
+* /OBSBOT/WebCam/General/SetAutoFocus
+* /OBSBOT/WebCam/General/SetManualFocus
+* /OBSBOT/WebCam/General/SetAutoExposure
 
-/OBSBOT/WebCam/General/SetManualFocus
+
 /OBSBOT/WebCam/General/SetExposureCompensate
 /OBSBOT/WebCam/General/SetShutterSpeed
 /OBSBOT/WebCam/General/SetISO

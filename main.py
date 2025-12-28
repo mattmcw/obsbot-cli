@@ -9,13 +9,39 @@ COMMANDS = {
 	"WakeSleep" : {
 		"address" : "/OBSBOT/WebCam/General/WakeSleep",
 		"value" : 1,
-		"options" : [0, 1],
-		"type" : "simple"
+		"options_int" : [0, 1], #sleep/wake
+		"type" : "set"
 	},
 	"ResetGimbal" : {
 		"address" : "/OBSBOT/WebCam/General/ResetGimbal",
 		"value" : 0,
-		"type" : "simple"
+		"type" : "set"
+	},
+	"SetMirror" : {
+		"address" : "/OBSBOT/WebCam/General/SetMirror",
+		"value" : 1,
+		"options_int" : [0, 1], #regular/mirrored
+		"type" : "set"
+	},
+	"SetAutoFocus" : {
+		"address" : "/OBSBOT/WebCam/General/SetAutoFocus",
+		"value" : 1,
+		"options_int" : [0, 1], #manual/auto
+		"type" : "set",
+		"cameras" : ["Tiny", "Meet"]
+	},
+	"SetManualFocus" : {
+		"address" : "/OBSBOT/WebCam/General/SetManualFocus",
+		"value" : 1,
+		"range_int" : [0, 100], #
+		"type" : "set",
+		"cameras" : ["Tiny", "Meet"]
+	},
+	"SetAutoExposure" : {
+		"address" : "/OBSBOT/WebCam/General/SetAutoExposure",
+		"value" : 1,
+		"options_int" : [0, 1], #manual/auto
+		"type" : "set"
 	}
 }
 
@@ -38,11 +64,21 @@ def update_config (args, env) :
 def list () :
 	keys = COMMANDS.keys()
 
-	print(f"Command\t\tAddress")
+	print(f"Command\t\tAddress\t\t\t\t\tOptions\tCameras")
 	for key in keys :
-		print(f"{key}\t{COMMANDS[key]['address']}")
+		range_str = ""
+		cameras_str = "*"
+		if "options_int" in COMMANDS[key] :
+			range_str = "/".join(map(str, COMMANDS[key]["options_int"]))
+		elif "range_int" in COMMANDS[key] :
+			range_str = "->".join(map(str,COMMANDS[key]["range_int"]))
+		elif "range_float" in COMMANDS[key] :
+			range_str = "->".join(map(str,COMMANDS[key]["range_float"]))
+		else :
+			range_str = COMMANDS[key]["value"]
+		print(f"{key}\t{COMMANDS[key]['address']}\t[{range_str}]\t{cameras_str}")
 
-def send_osc_command_simple(address, value):
+def send_osc_command_set(address, value):
 	"""Sends an OSC message with a single integer argument."""
 	try:
 		client = udp_client.SimpleUDPClient(Config["host"], Config["port"])
@@ -61,24 +97,36 @@ def command (args, parser) :
 		cmd = COMMANDS[args.command]["address"]
 		val = COMMANDS[args.command]["value"]
 
+		if "cameras" in COMMANDS[args.command] and Config["camera"] not in COMMANDS[args.command]["cameras"] :
+			print(f"Command {args.command} is not available to camera type {Config['camera']}")
+			exit(5)
+
 		if getattr(args, "value") is not None :
-			if "options" in COMMANDS[args.command]:
-				if int(args.value) not in COMMANDS[args.command]["options"] :
+			if "options_int" in COMMANDS[args.command]:
+				if int(args.value) not in COMMANDS[args.command]["options_int"] :
 					print(f"Value {int(args.value)} not a valid value for command {cmd}")
 					exit(3)
 				else :
 					val = int(args.value)
-			elif "range" in COMMANDS[args.command]: 
-				if args.value < COMMANDS[args.command]["range"][0] or args.value > COMMANDS[args.command]["range"][1] :
-					print(f"Value {args.value} is not in range {COMMANDS[args.command]['range'][0]}->{COMMANDS[args.command]['range'][1]} for command {args.command}")
+			elif "range_float" in COMMANDS[args.command]: 
+				if float(args.value) < COMMANDS[args.command]["range_float"][0] or float(args.value) > COMMANDS[args.command]["range_float"][1] :
+					print(f"Value {float(args.value)} is not in range {COMMANDS[args.command]['range_float'][0]}->{COMMANDS[args.command]['range_float'][1]} for command {args.command}")
 					exit(4)
 				else : 
-					val = args.value
+					val = float(args.value)
+			elif "range_int" in COMMANDS[args.command]: 
+				if int(args.value) < COMMANDS[args.command]["range_int"][0] or int(args.value) > COMMANDS[args.command]["range_int"][1] :
+					print(f"Value {int(args.value)} is not in range {COMMANDS[args.command]['range_int'][0]}->{COMMANDS[args.command]['range_int'][1]} for command {args.command}")
+					exit(4)
+				else : 
+					val = int(args.value)
+			else : 
+				print(f"Ignoring value {args.value} for default {COMMANDS[args.command]['value']}...")
 
-		if COMMANDS[args.command]["type"] == "simple" :
-			send_osc_command_simple(cmd, val)
+		if COMMANDS[args.command]["type"] == "set" :
+			send_osc_command_set(cmd, val)
 		# getter
-		# 
+		# adjuster
 	else :
 		print(f"Command {args.command} is not valid")
 		parser.print_help()
@@ -86,17 +134,17 @@ def command (args, parser) :
 
 def main () :
 	parser = ArgumentParser(description="Unofficial command line utility for sending OSC commands to OBSBOT cameras")
+
 	parser.add_argument("-e", "--env", type=str, help="Choose an ENV file to use (default: .env)", default=".env")
 	parser.add_argument("-H", "--host", type=str, help=f"Host to connect to OSC server (default: {Config['host']})")
 	parser.add_argument("-P", "--port", type=int, help=f"Port of OSC server (default: {Config['port']})")
 	parser.add_argument("-c", "--camera", choices=CAMERAS, help=f"OBSBOT camera type to send commands for [General/Tiny/Meet/Tail] (default: {Config['camera']})")
 	parser.add_argument("-l", "--list", action="store_true", help="List all available commands for camera type")
 	parser.add_argument("command", type=str, nargs="?", help="Command to issue to OBSBOT camera over OSC")
-	parser.add_argument("value", type=float, nargs="?", help="Optional value to send with command")
-	args = parser.parse_args()
+	parser.add_argument("value", type=str, nargs="?", help="Optional value to send with command")
 	
+	args = parser.parse_args()
 	env = dotenv_values(args.env)
-
 	update_config(args, env)
 
 	if args.list :
