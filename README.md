@@ -20,7 +20,11 @@ SetMirror	/OBSBOT/WebCam/General/SetMirror	[0/1]	*
 SetAutoFocus	/OBSBOT/WebCam/General/SetAutoFocus	[0/1]	*
 SetManualFocus	/OBSBOT/WebCam/General/SetManualFocus	[0->100]	*
 SetAutoExposure	/OBSBOT/WebCam/General/SetAutoExposure	[0/1]	*
-SetExposureCompensate	/OBSBOT/WebCam/General/SetExposureCompensate	[-30/-27/-23/-20/-17/-13/-10/-7/-3/0/3/7/10/13/17/20/23/27/30]	*
+SetExposureCompensate	/OBSBOT/WebCam/General/SetExposureCompensate	[-30->30]	*
+SetShutterSpeed	/OBSBOT/WebCam/General/SetShutterSpeed	[3->6400]	*
+SetISO	/OBSBOT/WebCam/General/SetISO	[100->6400]	*
+SetAutoWhiteBalance	/OBSBOT/WebCam/General/SetAutoWhiteBalance	[0/1]	*
+SetColorTemperature	/OBSBOT/WebCam/General/SetColorTemperature	[2800->6500]	*
 ```
 
 ## Coverage

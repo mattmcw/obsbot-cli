@@ -49,15 +49,34 @@ COMMANDS = {
 		"options_int" : [-30, -27, -23, -20, -17, -13, -10, -7, -3, 0, 3, 7, 10, 13, 17, 20, 23, 27, 30],
 		"type" : "set"
 	},
-
+	"SetShutterSpeed" : {
+		"address" : "/OBSBOT/WebCam/General/SetShutterSpeed",
+		"value" : 80,
+		"options_int" : [6400, 5000, 3200, 2500, 2000, 1600, 1250, 1000, 800, 640, 500, 400, 320, 240, 200, 160, 120, 100, 80, 60, 50, 40, 30, 25, 20, 15, 10, 8, 5, 4, 3], # floats?? 12.5, 6.25, 2.5
+		"type" : "set"
+	},
+	"SetISO" : {
+		"address" : "/OBSBOT/WebCam/General/SetISO",
+		"value" : 1,
+		"range_int" : [100, 6400], #snaps to nearest 100
+		"type" : "set"
+	},
+	"SetAutoWhiteBalance" : {
+		"address" : "/OBSBOT/WebCam/General/SetAutoWhiteBalance",
+		"value" : 1,
+		"options_int" : [0, 1], #manual/auto
+		"type" : "set"
+	},
+	"SetColorTemperature" : {
+		"address" : "/OBSBOT/WebCam/General/SetColorTemperature",
+		"value" : 1,
+		"range_int" : [2800, 6500], #snaps to nearest 100
+		"type" : "set"
+	}
 }
 
 '''
-/OBSBOT/WebCam/General/SetShutterSpeed 1->6400
-#(6400, 5000, 3200, 2500, 2000, 1600, 1250, 1000, 800, 640, 500, 400, 320, 240, 200, 160, 120, 100, 80, 60, 50, 40, 30, 25, 20, 15, 12.5, 10, 8, 6.25, 5, 4, 3, 2.5).
-/OBSBOT/WebCam/General/SetISO 100->6400
-/OBSBOT/WebCam/General/SetAutoWhiteBalance 0/1
-/OBSBOT/WebCam/General/SetColorTemperature 2800->6500
+
 '''
 
 Config = {
