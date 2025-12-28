@@ -8,7 +8,7 @@ from pythonosc import udp_client
 /OBSBOT/WebCam/General/Disconnected
 /OBSBOT/WebCam/General/SelectDevice
 * /OBSBOT/WebCam/General/WakeSleep
-/OBSBOT/WebCam/General/ResetGimbal
+# /OBSBOT/WebCam/General/ResetGimbal
 /OBSBOT/WebCam/General/SetZoom
 /OBSBOT/WebCam/General/SetZoomSpeed
 /OBSBOT/WebCam/General/SetZoomMax
@@ -75,6 +75,10 @@ CONFIG_VALUES = ['host', 'port', 'camera']
 COMMANDS = {
 	"WakeSleep" : {
 		"address" : "/OBSBOT/WebCam/General/WakeSleep",
+		"value" : 1
+	},
+	"ResetGimbal" : {
+		"address" : "/OBSBOT/WebCam/General/ResetGimbal",
 		"value" : 1
 	}
 }
